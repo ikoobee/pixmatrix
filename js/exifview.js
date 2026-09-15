@@ -8,6 +8,7 @@ import * as exif from './exif.js';
 import * as engine from './engine.js';
 import { $, toast, wireUpload, showPicked } from './shared.js';
 import { track } from './analytics.js';
+import { t, tf } from './i18n.js';
 
 const TOOL = 'exif';
 let file = null;
@@ -18,20 +19,17 @@ wireUpload('dropZone', 'fileInput', f => {
   analyze();
 }, { multiple: false });
 
-function refreshQuota() {
-  // Viewing is unlimited; stripping applies to the downloaded copy
-}
-refreshQuota();
-
 function fmtSize(n) {
   if (n < 1024) return `${n} B`;
   if (n < 1024 * 1024) return `${(n / 1024).toFixed(1)} KB`;
   return `${(n / 1024 / 1024).toFixed(2)} MB`;
 }
 
-const TAGS_IFD0 = { 0x010f: '相机厂商', 0x0110: '相机型号', 0x0132: '拍摄时间', 0x0112: '方向' };
-const TAGS_SUB = { 0x829a: '快门速度', 0x829d: '光圈', 0x8827: 'ISO', 0x920a: '焦距' };
-const ORIENT = { 1: '正常', 3: '旋转 180°', 6: '顺时针 90°', 8: '逆时针 90°' };
+/* Tag maps hold i18n keys; labels are resolved via t() at render time so
+ * they always follow the active language (not the language at module load). */
+const TAGS_IFD0 = { 0x010f: 'exifTagMake', 0x0110: 'exifTagModel', 0x0132: 'exifTagDate', 0x0112: 'exifTagOrient' };
+const TAGS_SUB = { 0x829a: 'exifTagShutter', 0x829d: 'exifTagAperture', 0x8827: 'exifTagIso', 0x920a: 'exifTagFocal' };
+const ORIENT = { 1: 'exifOrientNormal', 3: 'exifOrient180', 6: 'exifOrient90cw', 8: 'exifOrient90ccw' };
 
 /** Parse the EXIF segment -> {rows:[[label,value]], hasGps}. */
 function parseExif(seg) {
@@ -84,12 +82,12 @@ function parseExif(seg) {
       const v = readValue(entry, type, count);
       if (v == null || v === '') continue;
       let text = v;
-      if (tag === 0x0112) text = ORIENT[v] || v;
-      if (tag === 0x829a) text = v < 1 ? `1/${Math.round(1 / v)} 秒` : `${v} 秒`;
+      if (tag === 0x0112) text = ORIENT[v] ? t(ORIENT[v]) : v;
+      if (tag === 0x829a) text = v < 1 ? tf('exifShutterFrac', Math.round(1 / v)) : tf('exifShutterSec', v);
       if (tag === 0x829d) text = `f/${v.toFixed(1)}`;
       if (tag === 0x920a) text = `${Math.round(v)} mm`;
       if (tag === 0x8827) text = `${v}`;
-      rows.push([map[tag], String(text)]);
+      rows.push([t(map[tag]), String(text)]);
     }
   }
 
@@ -143,35 +141,35 @@ async function analyze() {
     return r;
   }).catch(() => null);
 
-  addRow(table, '文件名', file.name);
-  addRow(table, '格式', file.type || '未知');
-  if (size) addRow(table, '尺寸', `${size.w} × ${size.h}`);
-  addRow(table, '大小', fmtSize(file.size));
+  addRow(table, t('exifFileName'), file.name);
+  addRow(table, t('exifFormat'), file.type || t('exifUnknown'));
+  if (size) addRow(table, t('exifDimensions'), `${size.w} × ${size.h}`);
+  addRow(table, t('exifFileSize'), fmtSize(file.size));
 
   if (!isJpeg) {
-    addRow(table, 'EXIF', '无（仅 JPG 相机直出图含 EXIF）');
+    addRow(table, 'EXIF', t('exifNoneJpg'));
     return;
   }
 
   const bytes = new Uint8Array(await file.arrayBuffer());
   const seg = exif.getExifSegment(bytes);
   if (!seg) {
-    addRow(table, 'EXIF', '未检出');
+    addRow(table, 'EXIF', t('exifNotDetected'));
     return;
   }
   const { rows, hasGps } = parseExif(seg);
   for (const [k, v] of rows) addRow(table, k, v);
-  if (hasGps) addRow(table, '⚠️ GPS 拍摄位置', '已检出（建议外发前删除）', true);
-  else addRow(table, 'GPS 拍摄位置', '未检出');
+  if (hasGps) addRow(table, t('exifGpsTagWarn'), t('exifGpsFound'), true);
+  else addRow(table, t('exifGpsTag'), t('exifNotDetected'));
 
   if (hasGps) {
     const btn1 = document.createElement('button');
     btn1.className = 'btn primary lg';
-    btn1.textContent = '下载"仅去 GPS"副本（保留拍摄参数）';
+    btn1.textContent = t('exifDlGpsBtn');
     btn1.addEventListener('click', async () => {
       const { seg: stripped } = exif.stripGps(seg);
       const out = exif.graftSegments(removeAllExif(bytes), [stripped]);
-      engine.downloadBlob(new Blob([out], { type: 'image/jpeg' }), `${file.name.replace(/\.jpe?g$/i, '')}_去GPS.jpg`);
+      engine.downloadBlob(new Blob([out], { type: 'image/jpeg' }), tf('exifGpsName', file.name.replace(/\.jpe?g$/i, '')));
       track('download', { tool: TOOL, mode: 'strip-gps' });
     });
     actions.appendChild(btn1);
@@ -179,10 +177,10 @@ async function analyze() {
 
   const btn2 = document.createElement('button');
   btn2.className = 'btn ghost lg';
-  btn2.textContent = '下载"清除全部 EXIF"副本';
+  btn2.textContent = t('exifDlAllBtn');
   btn2.addEventListener('click', () => {
     const out = removeAllExif(bytes);
-    engine.downloadBlob(new Blob([out], { type: 'image/jpeg' }), `${file.name.replace(/\.jpe?g$/i, '')}_无EXIF.jpg`);
+    engine.downloadBlob(new Blob([out], { type: 'image/jpeg' }), tf('exifAllName', file.name.replace(/\.jpe?g$/i, '')));
     track('download', { tool: TOOL, mode: 'strip-all' });
   });
   actions.appendChild(btn2);

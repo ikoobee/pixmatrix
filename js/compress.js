@@ -1,11 +1,14 @@
 /**
  * Image compression: quality + size levers; PNG format strategy
  * (photo-like PNGs go to JPEG / screenshots keep their format with
- * downscaling). Compression ratio shown live.
+ * downscaling). Compression ratio shown live. All user-facing strings
+ * come from i18n keys (compress* entries, see
+ * tools/i18n-entries/compress.js).
  */
 import * as engine from './engine.js';
 import { $, toast, wireUpload } from './shared.js';
 import { track } from './analytics.js';
+import { t, tf } from './i18n.js';
 
 const TOOL = 'compress';
 const MAX_FILES = 20;
@@ -17,7 +20,7 @@ wireUpload('dropZone', 'fileInput', list => {
   const imgs = list.filter(f => f.type && f.type.startsWith('image/'));
   if (!imgs.length) return;
   const room = MAX_FILES - files.length;
-  if (room <= 0) { toast(`最多同时处理 ${MAX_FILES} 张`, 'warn'); return; }
+  if (room <= 0) { toast(tf('compressMaxFiles', MAX_FILES), 'warn'); return; }
   files.push(...imgs.slice(0, room));
   renderThumbs();
 });
@@ -48,9 +51,6 @@ function renderThumbs() {
 
 $('quality').addEventListener('input', () => { $('qualityVal').textContent = $('quality').value; });
 
-function refreshQuota() {
-}
-refreshQuota();
 
 function fmtSize(n) {
   if (n < 1024) return `${n} B`;
@@ -112,13 +112,13 @@ function renderRows() {
     const tr = document.createElement('tr');
     const ratio = 1 - r.newSize / r.origSize;
     const cls = ratio > 0.2 ? 'ratio-good' : (ratio < 0 ? 'ratio-bad' : '');
-    const ratioTxt = ratio >= 0 ? `-${(ratio * 100).toFixed(1)}%` : `+${(-ratio * 100).toFixed(1)}%（变大，建议调质量）`;
+    const ratioTxt = ratio >= 0 ? `-${(ratio * 100).toFixed(1)}%` : tf('compressRatioBad', (-ratio * 100).toFixed(1));
     tr.innerHTML = `
-      <td>${escapeHtml(r.name)}${r.converted ? ' <span class="chip">已转格式</span>' : ''}</td>
+      <td>${escapeHtml(r.name)}${r.converted ? ` <span class="chip">${t('compressConverted')}</span>` : ''}</td>
       <td>${fmtSize(r.origSize)}</td>
       <td>${fmtSize(r.newSize)}</td>
       <td class="${cls}">${ratioTxt}</td>
-      <td><button class="btn ghost sm">下载</button></td>`;
+      <td><button class="btn ghost sm">${t('compressDownload')}</button></td>`;
     tr.querySelector('button').addEventListener('click', () => {
       engine.downloadBlob(r.blob, r.name);
       track('download', { tool: TOOL });
@@ -126,7 +126,7 @@ function renderRows() {
     rows.appendChild(tr);
   }
   const saved = 1 - totalN / totalO;
-  $('summary').textContent = `共 ${results.length} 张：${fmtSize(totalO)} → ${fmtSize(totalN)}（省 ${(saved * 100).toFixed(0)}%）`;
+  $('summary').textContent = tf('compressSummary', results.length, fmtSize(totalO), fmtSize(totalN), (saved * 100).toFixed(0));
 }
 
 function escapeHtml(s) {
@@ -134,11 +134,11 @@ function escapeHtml(s) {
 }
 
 async function run() {
-  if (!files.length) { toast('请先添加至少一张图片', 'warn'); return; }
+  if (!files.length) { toast(t('compressNeedFile'), 'warn'); return; }
 
   const btn = $('goBtn');
   btn.disabled = true;
-  btn.textContent = '压缩中…';
+  btn.textContent = t('compressWip');
   results.forEach(r => URL.revokeObjectURL(r.url));
   results.length = 0;
   $('rows').innerHTML = '';
@@ -149,16 +149,15 @@ async function run() {
         renderRows();
       } catch (err) {
         console.error(err);
-        toast(`${f.name}: 处理失败`, 'error');
+        toast(tf('compressFileFailed', f.name), 'error');
       }
     }
-    refreshQuota();
     $('result').hidden = !results.length;
     if (results.length) $('result').scrollIntoView({ behavior: 'smooth', block: 'start' });
     track('generate', { tool: TOOL, count: results.length, quality: $('quality').value, maxSide: $('maxSide').value, pngToJpeg: $('pngToJpeg').checked });
   } finally {
     btn.disabled = false;
-    btn.textContent = '开始压缩';
+    btn.textContent = t('compressGoBtn');
   }
 }
 

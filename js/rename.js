@@ -8,6 +8,7 @@
 import * as engine from './engine.js';
 import { $, toast } from './shared.js';
 import { track } from './analytics.js';
+import { t, tf } from './i18n.js';
 
 const TOOL = 'rename';
 const IMG_RE = /\.(jpe?g|png|webp|gif|bmp)$/i;
@@ -19,9 +20,6 @@ const state = {
 
 const hasFSA = 'showDirectoryPicker' in window;
 
-function refreshQuota() {
-}
-refreshQuota();
 
 function escapeHtml(s) {
   return s.replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -62,8 +60,10 @@ function renderPreview() {
     rows.appendChild(tr);
   }
   $('countHint').textContent = state.files.length
-    ? `${state.files.length} 张（${state.dirHandle ? '文件夹模式：将写入 renamed/ 子目录' : '文件模式：ZIP 下载'}）`
-    : '尚未选择';
+    ? (state.dirHandle
+        ? tf('renameCountDir', state.files.length)
+        : tf('renameCountZip', state.files.length))
+    : t('renameNoSelection');
   $('applyBtn').disabled = !state.files.length;
 }
 
@@ -81,7 +81,7 @@ if (hasFSA) {
           files.push(await entry.getFile());
         }
       }
-      if (!files.length) { toast('该文件夹里没有图片', 'warn'); return; }
+      if (!files.length) { toast(t('renameNoImages'), 'warn'); return; }
       files.sort((a, b) => a.name.localeCompare(b.name, 'zh-CN', { numeric: true }));
       state.files = files;
       state.dirHandle = dir;
@@ -90,13 +90,13 @@ if (hasFSA) {
     } catch (err) {
       if (err && err.name !== 'AbortError') {
         console.error(err);
-        toast('读取文件夹失败', 'warn');
+        toast(t('renameReadFail'), 'warn');
       }
     }
   });
 } else {
   $('pickDirBtn').disabled = true;
-  $('pickDirBtn').textContent = '选择文件夹（需 Chrome/Edge）';
+  $('pickDirBtn').textContent = t('renamePickDirNoFsa');
 }
 
 /* ---------- Mode B: uploaded files ---------- */
@@ -125,7 +125,7 @@ $('applyBtn').addEventListener('click', async () => {
   const names = computeNames($('pattern').value);
   const btn = $('applyBtn');
   btn.disabled = true;
-  btn.textContent = '执行中…';
+  btn.textContent = t('renameRunning');
   try {
     if (state.dirHandle) {
       // Write into the renamed/ subdirectory (originals untouched)
@@ -136,7 +136,7 @@ $('applyBtn').addEventListener('click', async () => {
         await w.write(state.files[i]);
         await w.close();
       }
-      toast(`已写入 ${state.files.length} 个文件到 renamed/ 子目录`);
+      toast(tf('renameWritten', state.files.length));
       track('apply', { tool: TOOL, mode: 'dir', count: state.files.length });
     } else {
       const JSZip = (await import('https://jspm.dev/jszip@3.10.1')).default;
@@ -144,15 +144,14 @@ $('applyBtn').addEventListener('click', async () => {
       for (let i = 0; i < state.files.length; i++) zip.file(names[i].name, state.files[i]);
       const blob = await zip.generateAsync({ type: 'blob', compression: 'STORE' });
       engine.downloadBlob(blob, `renamed_${engine.makeTimestamp()}.zip`);
-      toast('ZIP 已开始下载');
+      toast(t('renameZipStarted'));
       track('apply', { tool: TOOL, mode: 'zip', count: state.files.length });
     }
-    refreshQuota();
   } catch (err) {
     console.error(err);
-    toast('执行失败：' + (err.message || ''), 'error');
+    toast(tf('renameFail', err.message || ''), 'error');
   } finally {
     btn.disabled = false;
-    btn.textContent = '执行重命名';
+    btn.textContent = t('renameApply');
   }
 });

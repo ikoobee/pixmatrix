@@ -49,7 +49,7 @@ npm test
 
 ## UI language
 
-The interface is Chinese-only by design: the site targets Chinese long-tail search intents, where a translated UI adds no value — an English edition would need rewritten tool pages rather than translated strings. The code, comments, commits and these README files are English-first. If you want an English UI, [open an issue](https://github.com/ikoobee/pixmatrix/issues) describing your use case — demand will drive a proper rewrite, not a mechanical translation.
+The interface ships bilingual (中文 / English) with a language selector in the navigator; the choice persists per browser and `?lang=en` deep-links work. The blog and legal pages remain Chinese-only for now. Code, comments, commits and these README files are English-first.
 
 ## Self-hosting
 

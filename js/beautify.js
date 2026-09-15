@@ -6,6 +6,7 @@
 import * as engine from './engine.js';
 import { $, toast, wireUpload, showPicked } from './shared.js';
 import { track } from './analytics.js';
+import { t } from './i18n.js';
 
 const TOOL = 'beautify';
 
@@ -27,9 +28,6 @@ wireUpload('dropZone', 'fileInput', f => {
 ['pad', 'radius'].forEach(id =>
   $(id).addEventListener('input', () => { $(id + 'Val').textContent = $(id).value; }));
 
-function refreshQuota() {
-}
-refreshQuota();
 
 function roundRectPath(ctx, x, y, w, h, r) {
   r = Math.min(r, w / 2, h / 2);
@@ -43,11 +41,11 @@ function roundRectPath(ctx, x, y, w, h, r) {
 }
 
 async function run() {
-  if (!file) { toast('请先选择一张截图', 'warn'); return; }
+  if (!file) { toast(t('beautifyNeedImage'), 'warn'); return; }
 
   const btn = $('goBtn');
   btn.disabled = true;
-  btn.textContent = '处理中…';
+  btn.textContent = t('beautifyRunning');
   try {
     const src = await engine.decodeImageFile(file);
     const S = { w: src.naturalWidth || src.width, h: src.naturalHeight || src.height };
@@ -120,16 +118,15 @@ async function run() {
     img.src = URL.createObjectURL(new Blob([await new Promise(r => canvas.toBlob(r, 'image/png'))]));
     box.appendChild(img);
     state.canvas = canvas;
-    refreshQuota();
     $('result').hidden = false;
     $('result').scrollIntoView({ behavior: 'smooth', block: 'start' });
     track('generate', { tool: TOOL, bg: bgv, bar, shadow });
   } catch (err) {
     console.error(err);
-    toast('处理失败，请换一张图片', 'error');
+    toast(t('beautifyFail'), 'error');
   } finally {
     btn.disabled = false;
-    btn.textContent = '生成分享图';
+    btn.textContent = t('beautifyGo');
   }
 }
 

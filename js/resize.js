@@ -6,6 +6,7 @@
 import * as engine from './engine.js';
 import { $, toast, wireUpload, showPicked } from './shared.js';
 import { track } from './analytics.js';
+import { t } from './i18n.js';
 
 const TOOL = 'resize';
 let file = null;
@@ -19,9 +20,6 @@ wireUpload('dropZone', 'fileInput', f => {
 document.querySelectorAll('input[name="spec"]').forEach(cb =>
   cb.addEventListener('change', () => { $('customWrap').hidden = !document.querySelector('input[name="spec"][value="custom"]').checked; }));
 
-function refreshQuota() {
-}
-refreshQuota();
 
 /** Exact-pixel render: cover crop / contain pad / blurred background. */
 function renderAt(src, W, H, fit) {
@@ -51,7 +49,7 @@ function renderAt(src, W, H, fit) {
 }
 
 async function run() {
-  if (!file) { toast('请先选择一张图片', 'warn'); return; }
+  if (!file) { toast(t('resizeEmptyToast'), 'warn'); return; }
 
   const specs = [];
   document.querySelectorAll('input[name="spec"]:checked').forEach(cb => {
@@ -64,11 +62,11 @@ async function run() {
       specs.push({ W, H, key: cb.value });
     }
   });
-  if (!specs.length) { toast('请至少选择一个输出规格', 'warn'); return; }
+  if (!specs.length) { toast(t('resizeNoSpecToast'), 'warn'); return; }
 
   const btn = $('goBtn');
   btn.disabled = true;
-  btn.textContent = '处理中…';
+  btn.textContent = t('resizeRunning');
   try {
     const src = await engine.decodeImageFile(file);
     const fit = $('fitMode').value;
@@ -115,16 +113,15 @@ async function run() {
       previews.appendChild(cell);
     }
     if (src.close) src.close();
-    refreshQuota();
     $('result').hidden = false;
     $('result').scrollIntoView({ behavior: 'smooth', block: 'start' });
     track('generate', { tool: TOOL, specs: specs.length, fit });
   } catch (err) {
     console.error(err);
-    toast('处理失败，请换一张图片', 'error');
+    toast(t('resizeFailToast'), 'error');
   } finally {
     btn.disabled = false;
-    btn.textContent = '生成并打包';
+    btn.textContent = t('resizeGoBtn');
   }
 }
 
@@ -141,6 +138,6 @@ $('zipBtn').addEventListener('click', async () => {
     track('zip_download', { tool: TOOL, count: outputs.length });
   } catch (err) {
     console.error(err);
-    toast('打包失败，可长按预览图逐张保存', 'warn');
+    toast(t('resizeZipFailToast'), 'warn');
   }
 });

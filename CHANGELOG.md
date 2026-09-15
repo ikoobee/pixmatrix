@@ -20,6 +20,8 @@ Initial public release.
   tool navigator, per-tool SEO landing pages.
 - Regression tests for the shared engine math and EXIF module
   (`tools/test-engine-math.mjs`, `tools/test-exif.mjs`).
+- Bilingual UI (zh-CN / en) across all nine pages — language selector in
+  the navigator, persisted per browser, `?lang=` deep links.
 - Zero dependencies, zero build — native ES Modules; JSZip lazy-loaded
   from CDN only when packaging ZIPs.
 
@@ -27,5 +29,3 @@ Initial public release.
 
 - No accounts, no quotas, no telemetry — every tool is unlimited and
   fully local.
-- The UI is Chinese-only by design (Chinese long-tail search intents);
-  code and docs are English-first. See README for the rationale.

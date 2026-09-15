@@ -6,6 +6,7 @@
 import * as engine from './engine.js';
 import { $, toast, wireUpload } from './shared.js';
 import { track } from './analytics.js';
+import { t, tf } from './i18n.js';
 
 const TOOL = 'convert';
 const MAX_FILES = 20;
@@ -17,7 +18,7 @@ wireUpload('dropZone', 'fileInput', list => {
   const imgs = list.filter(f => f.type && f.type.startsWith('image/'));
   if (!imgs.length) return;
   const room = MAX_FILES - files.length;
-  if (room <= 0) { toast(`最多同时处理 ${MAX_FILES} 张`, 'warn'); return; }
+  if (room <= 0) { toast(tf('convertMaxToast', MAX_FILES), 'warn'); return; }
   files.push(...imgs.slice(0, room));
   renderThumbs();
 });
@@ -48,9 +49,6 @@ function renderThumbs() {
 
 $('quality').addEventListener('input', () => { $('qualityVal').textContent = $('quality').value; });
 
-function refreshQuota() {
-}
-refreshQuota();
 
 function fmtSize(n) {
   if (n < 1024) return `${n} B`;
@@ -87,7 +85,7 @@ async function convertOne(file) {
     url: URL.createObjectURL(blob),
     origSize: file.size,
     newSize: blob.size,
-    fromType: file.type || '未知',
+    fromType: file.type || t('convertUnknown'),
     toType: mime,
   };
 }
@@ -112,21 +110,21 @@ function renderRows() {
       <td>${(NAME[r.fromType] || r.fromType)} · ${fmtSize(r.origSize)}</td>
       <td><b>${NAME[r.toType]}</b> · ${fmtSize(r.newSize)}</td>
       <td class="${cls}">${txt}</td>
-      <td><button class="btn ghost sm">下载</button></td>`;
+      <td><button class="btn ghost sm">${t('convertDlBtn')}</button></td>`;
     tr.querySelector('button').addEventListener('click', () => {
       engine.downloadBlob(r.blob, r.name);
       track('download', { tool: TOOL });
     });
     rows.appendChild(tr);
   }
-  $('summary').textContent = `共 ${results.length} 张：${fmtSize(totalO)} → ${fmtSize(totalN)}`;
+  $('summary').textContent = tf('convertSummary', results.length, fmtSize(totalO), fmtSize(totalN));
 }
 
 async function run() {
-  if (!files.length) { toast('请先添加至少一张图片', 'warn'); return; }
+  if (!files.length) { toast(t('convertEmptyToast'), 'warn'); return; }
   const btn = $('goBtn');
   btn.disabled = true;
-  btn.textContent = '转换中…';
+  btn.textContent = t('convertRunning');
   results.forEach(r => URL.revokeObjectURL(r.url));
   results.length = 0;
   $('rows').innerHTML = '';
@@ -137,16 +135,15 @@ async function run() {
         renderRows();
       } catch (err) {
         console.error(err);
-        toast(`${f.name}: 处理失败`, 'error');
+        toast(tf('convertFailToast', f.name), 'error');
       }
     }
-    refreshQuota();
     $('result').hidden = !results.length;
     if (results.length) $('result').scrollIntoView({ behavior: 'smooth', block: 'start' });
     track('generate', { tool: TOOL, count: results.length, target: $('target').value });
   } finally {
     btn.disabled = false;
-    btn.textContent = '开始转换';
+    btn.textContent = t('convertGoBtn');
   }
 }
 

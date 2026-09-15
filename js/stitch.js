@@ -6,6 +6,7 @@
 import * as engine from './engine.js';
 import { $, toast, wireUpload } from './shared.js';
 import { track } from './analytics.js';
+import { t, tf } from './i18n.js';
 
 const TOOL = 'stitch';
 const MAX_FILES = 20;
@@ -17,7 +18,7 @@ wireUpload('dropZone', 'fileInput', list => {
   const imgs = list.filter(f => f.type && f.type.startsWith('image/'));
   if (!imgs.length) return;
   const room = MAX_FILES - files.length;
-  if (room <= 0) { toast(`最多拼接 ${MAX_FILES} 张`, 'warn'); return; }
+  if (room <= 0) { toast(tf('stitchMaxFiles', MAX_FILES), 'warn'); return; }
   files.push(...imgs.slice(0, room));
   renderThumbs();
 });
@@ -53,9 +54,6 @@ function renderThumbs() {
 ['gap', 'pad', 'radius'].forEach(id =>
   $(id).addEventListener('input', () => { $(id + 'Val').textContent = $(id).value; }));
 
-function refreshQuota() {
-}
-refreshQuota();
 
 function roundRectPath(ctx, x, y, w, h, r) {
   r = Math.min(r, w / 2, h / 2);
@@ -69,11 +67,11 @@ function roundRectPath(ctx, x, y, w, h, r) {
 }
 
 async function run() {
-  if (files.length < 2) { toast('请至少添加 2 张图片', 'warn'); return; }
+  if (files.length < 2) { toast(t('stitchNeedTwo'), 'warn'); return; }
 
   const btn = $('goBtn');
   btn.disabled = true;
-  btn.textContent = '拼接中…';
+  btn.textContent = t('stitchRunning');
   try {
     const sources = [];
     for (const f of files) sources.push(await engine.decodeImageFile(f));
@@ -137,16 +135,15 @@ async function run() {
     img.src = url;
     box.appendChild(img);
     state.canvas = canvas;
-    refreshQuota();
     $('result').hidden = false;
     $('result').scrollIntoView({ behavior: 'smooth', block: 'start' });
     track('generate', { tool: TOOL, count: files.length, direction: $('direction').value, align });
   } catch (err) {
     console.error(err);
-    toast('拼接失败，请检查图片', 'error');
+    toast(t('stitchFail'), 'error');
   } finally {
     btn.disabled = false;
-    btn.textContent = '开始拼接';
+    btn.textContent = t('stitchGo');
   }
 }
 

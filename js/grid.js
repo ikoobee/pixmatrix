@@ -1,11 +1,13 @@
 /**
  * Nine-grid slicing: cover-crop to square -> (optional) watermark -> 3x3
  * tiles -> preview + ZIP. The watermark step calls the shared base engine
- * directly.
+ * directly. All user-facing strings come from i18n keys (grid* entries,
+ * see tools/i18n-entries/grid.js).
  */
 import * as engine from './engine.js';
 import { $, toast, wireUpload, showPicked } from './shared.js';
 import { track } from './analytics.js';
+import { t } from './i18n.js';
 
 const TOOL = 'grid';
 let file = null;
@@ -19,16 +21,13 @@ wireUpload('dropZone', 'fileInput', f => {
 $('wmOn').addEventListener('change', e => { $('wmPanel').hidden = !e.target.checked; });
 $('wmOpacity').addEventListener('input', () => { $('wmOpacityVal').textContent = `${$('wmOpacity').value}%`; });
 
-function refreshQuota() {
-}
-refreshQuota();
 
 async function run() {
-  if (!file) { toast('请先选择一张图片', 'warn'); return; }
+  if (!file) { toast(t('gridNeedFile'), 'warn'); return; }
 
   const btn = $('goBtn');
   btn.disabled = true;
-  btn.textContent = '处理中…';
+  btn.textContent = t('gridWip');
   try {
     const src = await engine.decodeImageFile(file);
     const size = parseInt($('outSize').value, 10);
@@ -86,16 +85,15 @@ async function run() {
       }
     }
     canvas.width = canvas.height = 0;
-    refreshQuota();
     $('result').hidden = false;
     $('result').scrollIntoView({ behavior: 'smooth', block: 'start' });
     track('generate', { tool: TOOL, size, watermark: $('wmOn').checked });
   } catch (err) {
     console.error(err);
-    toast('处理失败，请换一张图片', 'error');
+    toast(t('gridFailed'), 'error');
   } finally {
     btn.disabled = false;
-    btn.textContent = '切成九宫格';
+    btn.textContent = t('gridGoBtn');
   }
 }
 
@@ -124,6 +122,6 @@ $('zipBtn').addEventListener('click', async () => {
     track('zip_download', { tool: TOOL, count: cells.length });
   } catch (err) {
     console.error(err);
-    toast('打包失败，请长按预览图逐张保存', 'warn');
+    toast(t('gridZipFailed'), 'warn');
   }
 });

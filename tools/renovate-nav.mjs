@@ -1,3 +1,9 @@
+/*
+ * WARNING: this codemod rewrites tool-nav HTML WITHOUT data-i18n attributes.
+ * Pages are i18n-annotated now — re-running this script would strip the
+ * nav translations. Update the templates below to carry data-i18n keys
+ * (navBrand / navToolXxx / navDescXxx / navAllTools ...) before reuse.
+ */
 /**
  * 导航重构脚本（v0.3.2 美化版）：把全部页面的 tool-nav 替换为
  * "渐变品牌徽章 + 当前工具药丸 + 『全部工具』渐变按钮 + 博客" 单行结构，

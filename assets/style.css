@@ -322,6 +322,7 @@ input[type="range"] { width: 100%; accent-color: var(--brand); }
 
 /* 博客链接：安静文字链 */
 .tn-blog { padding: 5px 10px; }
+#langSelector { padding: 4px 6px; border: 1px solid #d8daE5; border-radius: 8px; background: #fff; font: inherit; font-size: 13px; color: inherit; cursor: pointer; }
 .tn-blog:hover { background: #f1f2f8 !important; color: var(--brand); }
 
 /* 下拉：带标题栏与描述的卡片菜单 */
