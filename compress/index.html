@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>图片压缩 - 在线批量压缩 JPG/PNG 不损画质，本地处理 - 图片工具箱</title>
+  <meta name="description" content="在线图片压缩工具：质量与尺寸双重可调，批量压缩 JPG/PNG/WebP，实时显示压缩率。PNG 照片可一键转 JPEG 大幅瘦身。本地处理不上传，免费无需注册。">
+  <meta name="keywords" content="图片压缩,在线压缩,批量压缩,JPG压缩,PNG压缩,图片变小">
+  <link rel="canonical" href="https://your-domain.example/compress/">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="图片压缩 - 在线批量压缩不损画质">
+  <meta property="og:description" content="质量/尺寸双重可调，实时压缩率，本地处理免费。">
+  <meta property="og:url" content="https://your-domain.example/compress/">
+  <meta property="og:image" content="https://your-domain.example/assets/og-cover.png">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%97%9C%EF%B8%8F%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="../assets/style.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "图片压缩",
+    "url": "https://your-domain.example/compress/",
+    "applicationCategory": "UtilitiesApplication",
+    "operatingSystem": "Any",
+    "description": "在线批量压缩图片：质量与尺寸可调，PNG 照片可转 JPEG，本地处理。",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "CNY" }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "怎么压缩图片基本不损画质？",
+        "acceptedAnswer": { "@type": "Answer", "text": "两个杠杆：质量参数 75~85 在肉眼无损与体积间平衡；超过展示需求的分辨率（如发图 1280px 足够）缩边处理收益最大。照片类 PNG 先转 JPEG 通常能缩小 60% 以上。" }
+      },
+      {
+        "@type": "Question",
+        "name": "PNG 格式怎么压缩？",
+        "acceptedAnswer": { "@type": "Answer", "text": "PNG 是无损格式，质量参数对它无效。两条路：开启\"照片 PNG 转 JPEG\"（照片类收益极大），或仅靠缩小尺寸。截图/图标类 PNG 保持格式、缩尺寸即可。" }
+      },
+      {
+        "@type": "Question",
+        "name": "图片会上传到服务器吗？",
+        "acceptedAnswer": { "@type": "Answer", "text": "不会。压缩全程在你的浏览器本地完成，处理完关闭页面数据即消失。" }
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <nav class="tool-nav">
+  <div class="container">
+    <a class="tn-brand" href="../"><span class="tn-logo">🧰</span>图片工具箱</a>
+    <div class="tn-menu">
+      <button class="tn-more" type="button">图片压缩 <span class="tn-caret">▾</span></button>
+      <div class="tn-dropdown">
+        <div class="tn-dd-head">全部工具<span>8 个免费工具 · 本地处理</span></div>
+        <div class="tn-dd-grid">
+          <a href="../grid/">
+            <span class="tn-ico">🧩</span>
+            <span class="tn-txt"><span class="tn-name">九宫格切图</span><span class="tn-desc">一张图变朋友圈九图</span></span>
+          </a>
+          <a href="../compress/" class="active">
+            <span class="tn-ico">🗜️</span>
+            <span class="tn-txt"><span class="tn-name">图片压缩</span><span class="tn-desc">批量瘦身不损画质</span></span>
+          </a>
+          <a href="../convert/">
+            <span class="tn-ico">🔄</span>
+            <span class="tn-txt"><span class="tn-name">格式转换</span><span class="tn-desc">JPG / PNG / WebP 互转</span></span>
+          </a>
+          <a href="../resize/">
+            <span class="tn-ico">📐</span>
+            <span class="tn-txt"><span class="tn-name">尺寸适配</span><span class="tn-desc">一键出社媒规格</span></span>
+          </a>
+          <a href="../exif/">
+            <span class="tn-ico">🔍</span>
+            <span class="tn-txt"><span class="tn-name">EXIF 查看</span><span class="tn-desc">查参数 · 删 GPS</span></span>
+          </a>
+          <a href="../stitch/">
+            <span class="tn-ico">🧵</span>
+            <span class="tn-txt"><span class="tn-name">长图拼接</span><span class="tn-desc">多张图拼成一张</span></span>
+          </a>
+          <a href="../beautify/">
+            <span class="tn-ico">🖼️</span>
+            <span class="tn-txt"><span class="tn-name">截图美化</span><span class="tn-desc">圆角渐变分享图</span></span>
+          </a>
+          <a href="../rename/">
+            <span class="tn-ico">🏷️</span>
+            <span class="tn-txt"><span class="tn-name">批量重命名</span><span class="tn-desc">模板改名零损伤</span></span>
+          </a>
+        </div>
+      </div>
+    </div>
+    <a class="tn-blog" href="../blog/zh/">博客</a>
+  </div>
+</nav>
+
+  <main class="container">
+    <section class="hero">
+      <h1>图片压缩：质量与尺寸双重可调</h1>
+      <p>批量压缩 JPG / PNG / WebP，实时显示压缩率；照片 PNG 一键转 JPEG 大幅瘦身。本地处理，免费无需注册。</p>
+      <ul class="badges">
+        <li>🔒 本地处理不上传</li>
+        <li>📊 实时压缩率</li>
+        <li>📦 批量 20 张</li>
+      </ul>
+    </section>
+
+    <div class="ad-slot" data-ad="top" aria-hidden="true"></div>
+
+    <section class="card">
+      <div id="dropZone" class="dropzone" role="button" tabindex="0">
+        <input type="file" id="fileInput" accept="image/*" multiple hidden>
+        <div class="dz-text">
+          <div class="dz-icon">🗜️</div>
+          <p class="dz-title">点击选择、拖拽或 Ctrl+V 粘贴图片（最多 20 张）</p>
+          <p class="dz-hint">JPG / PNG / WebP</p>
+        </div>
+      </div>
+      <div id="thumbs" class="thumbs" hidden></div>
+
+      <div class="form">
+        <div class="row2">
+          <div class="field">
+            <label for="quality">JPEG/WebP 质量：<span id="qualityVal">80</span></label>
+            <input type="range" id="quality" min="50" max="95" step="5" value="80">
+          </div>
+          <div class="field">
+            <label for="maxSide">最长边限制</label>
+            <select id="maxSide">
+              <option value="0" selected>保持原尺寸</option>
+              <option value="2560">2560px（2K）</option>
+              <option value="1920">1920px（发图推荐）</option>
+              <option value="1280">1280px（网页/聊天）</option>
+              <option value="800">800px（缩略）</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label class="check-row"><input type="checkbox" id="pngToJpeg" checked> 照片类 PNG 转 JPEG（无损 PNG 不受质量压缩，转格式收益最大；截图/透明图请关闭）</label>
+        </div>
+        <div class="actions">
+          <button id="goBtn" class="btn primary lg">开始压缩</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="result" class="card" hidden>
+      <div class="results-head">
+        <h2 id="summary">压缩结果</h2>
+        <button id="allBtn" class="btn primary">全部下载</button>
+      </div>
+      <div style="overflow-x:auto">
+        <table class="comp-table">
+          <thead><tr><th>文件</th><th>原大小</th><th>压缩后</th><th>压缩率</th><th>操作</th></tr></thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <div class="ad-slot" data-ad="middle" aria-hidden="true"></div>
+
+    <section id="how" class="card prose">
+      <h2>怎么压缩图片最有效？</h2>
+      <div class="steps">
+        <div class="step"><h3>1. 先缩边，再调质量</h3><p>超过展示需求的分辨率收益最大：发微信/网页 1280~1920px 足够，质量 75~85 肉眼无损。</p></div>
+        <div class="step"><h3>2. 照片 PNG 转 JPEG</h3><p>PNG 无损、体积大；照片类转 JPEG 普遍缩小 60% 以上。截图与透明图保持 PNG。</p></div>
+        <div class="step"><h3>3. 批量处理一次搞定</h3><p>拖入整批图片，表格实时显示每张压缩率，一键全部下载。</p></div>
+      </div>
+    </section>
+
+    <section id="faq" class="card prose">
+      <h2>常见问题</h2>
+      <details class="faq-item"><summary>怎么压缩图片基本不损画质？</summary><p>两个杠杆：质量参数 75~85 在肉眼无损与体积间平衡；超过展示需求的分辨率（如发图 1280px 足够）缩边处理收益最大。照片类 PNG 先转 JPEG 通常能缩小 60% 以上。</p></details>
+      <details class="faq-item"><summary>PNG 格式怎么压缩？</summary><p>PNG 是无损格式，质量参数对它无效。两条路：开启"照片 PNG 转 JPEG"（照片类收益极大），或仅靠缩小尺寸。截图/图标类 PNG 保持格式、缩尺寸即可。</p></details>
+      <details class="faq-item"><summary>图片会上传到服务器吗？</summary><p>不会。压缩全程在你的浏览器本地完成，处理完关闭页面数据即消失。</p></details>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>本工具在您的浏览器本地处理图片，不上传任何数据。</p>
+      <p>© 2026 图片工具箱 · <a href="../legal/privacy.html">隐私政策</a> · <a href="../legal/terms.html">使用条款</a> · <a href="../blog/zh/image-compress-guide.html">压缩指南</a></p>
+    </div>
+  </footer>
+
+  <script type="module" src="../js/compress.js"></script>
+</body>
+</html>

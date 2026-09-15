@@ -1,0 +1,15 @@
+# Dependencies (dev-only; the site itself has none)
+node_modules/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp
+
+# Local env & logs
+.env
+*.log
+
+# Static-server artifacts
+.tmp/
+.vercel/

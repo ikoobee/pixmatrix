@@ -1,0 +1,11 @@
+{
+  "name": "pixmatrix",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Eight focused in-browser image utilities on one static site: nine-grid slicing, compression, conversion, resizing, EXIF view/strip, stitching, screenshot beautifying, batch renaming. Zero build, zero upload, no limits.",
+  "scripts": {
+    "start": "npx --yes serve .",
+    "test": "node tools/test-engine-math.mjs && node tools/test-exif.mjs"
+  }
+}

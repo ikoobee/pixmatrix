@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EXIF 查看与抹除 - 查看拍摄参数，一键删除GPS位置 - 图片工具箱</title>
+  <meta name="description" content="在线查看图片 EXIF 拍摄参数（相机/镜头/光圈快门），一键输出删除 GPS 位置或清除全部 EXIF 的副本。本地处理不上传，保护隐私免费。">
+  <meta name="keywords" content="exif查看,删除exif,去除gps,图片元数据,照片隐私">
+  <link rel="canonical" href="https://your-domain.example/exif/">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="EXIF 查看与抹除 - 删除照片 GPS 位置">
+  <meta property="og:description" content="查看拍摄参数，一键去 GPS / 清 EXIF，本地处理。">
+  <meta property="og:url" content="https://your-domain.example/exif/">
+  <meta property="og:image" content="https://your-domain.example/assets/og-cover.png">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%94%8D%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="../assets/style.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "EXIF 查看与抹除",
+    "url": "https://your-domain.example/exif/",
+    "applicationCategory": "UtilitiesApplication",
+    "operatingSystem": "Any",
+    "description": "在线查看图片 EXIF 拍摄参数，一键输出删除 GPS 或全部 EXIF 的副本，本地处理。",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "CNY" }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "删除 EXIF 会影响画质吗？",
+        "acceptedAnswer": { "@type": "Answer", "text": "不会。EXIF 是附加在图像数据外的元数据段，删除它不触碰像素，画质与原图完全一致。" }
+      },
+      {
+        "@type": "Question",
+        "name": "为什么要在发图前删 GPS？",
+        "acceptedAnswer": { "@type": "Answer", "text": "手机照片默认记录拍摄地点。外发的图片若带 GPS，等于把家庭住址、常去位置一并送出。删掉 GPS、保留拍摄参数是发图的最佳实践。" }
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <nav class="tool-nav">
+  <div class="container">
+    <a class="tn-brand" href="../"><span class="tn-logo">🧰</span>图片工具箱</a>
+    <div class="tn-menu">
+      <button class="tn-more" type="button">EXIF 查看 <span class="tn-caret">▾</span></button>
+      <div class="tn-dropdown">
+        <div class="tn-dd-head">全部工具<span>8 个免费工具 · 本地处理</span></div>
+        <div class="tn-dd-grid">
+          <a href="../grid/">
+            <span class="tn-ico">🧩</span>
+            <span class="tn-txt"><span class="tn-name">九宫格切图</span><span class="tn-desc">一张图变朋友圈九图</span></span>
+          </a>
+          <a href="../compress/">
+            <span class="tn-ico">🗜️</span>
+            <span class="tn-txt"><span class="tn-name">图片压缩</span><span class="tn-desc">批量瘦身不损画质</span></span>
+          </a>
+          <a href="../convert/">
+            <span class="tn-ico">🔄</span>
+            <span class="tn-txt"><span class="tn-name">格式转换</span><span class="tn-desc">JPG / PNG / WebP 互转</span></span>
+          </a>
+          <a href="../resize/">
+            <span class="tn-ico">📐</span>
+            <span class="tn-txt"><span class="tn-name">尺寸适配</span><span class="tn-desc">一键出社媒规格</span></span>
+          </a>
+          <a href="../exif/" class="active">
+            <span class="tn-ico">🔍</span>
+            <span class="tn-txt"><span class="tn-name">EXIF 查看</span><span class="tn-desc">查参数 · 删 GPS</span></span>
+          </a>
+          <a href="../stitch/">
+            <span class="tn-ico">🧵</span>
+            <span class="tn-txt"><span class="tn-name">长图拼接</span><span class="tn-desc">多张图拼成一张</span></span>
+          </a>
+          <a href="../beautify/">
+            <span class="tn-ico">🖼️</span>
+            <span class="tn-txt"><span class="tn-name">截图美化</span><span class="tn-desc">圆角渐变分享图</span></span>
+          </a>
+          <a href="../rename/">
+            <span class="tn-ico">🏷️</span>
+            <span class="tn-txt"><span class="tn-name">批量重命名</span><span class="tn-desc">模板改名零损伤</span></span>
+          </a>
+        </div>
+      </div>
+    </div>
+    <a class="tn-blog" href="../blog/zh/">博客</a>
+  </div>
+</nav>
+
+  <main class="container">
+    <section class="hero">
+      <h1>EXIF 查看：看清照片里藏了什么</h1>
+      <p>查看拍摄参数与 GPS 位置，一键输出"仅去 GPS"或"清除全部 EXIF"的副本。本地处理，隐私不出浏览器。</p>
+      <ul class="badges">
+        <li>🔒 本地处理不上传</li>
+        <li>🧭 GPS 一键删除</li>
+        <li>🖼️ 不损画质</li>
+      </ul>
+    </section>
+
+    <div class="ad-slot" data-ad="top" aria-hidden="true"></div>
+
+    <section class="card">
+      <div id="dropZone" class="dropzone" role="button" tabindex="0">
+        <input type="file" id="fileInput" accept="image/*" hidden>
+        <div class="dz-text">
+          <div class="dz-icon">🔍</div>
+          <p class="dz-title">点击选择、拖拽或 Ctrl+V 粘贴图片（JPG 支持 EXIF）</p>
+          <p class="dz-hint">JPG / PNG / WebP</p>
+        </div>
+      </div>
+
+      <div id="info" hidden style="margin-top:16px">
+        <table class="comp-table" id="tagTable"></table>
+        <div class="actions" style="margin-top:14px" id="actions"></div>
+        <p class="hint" style="margin-top:8px">说明：输出为原图字节级副本（仅改动元数据段），画质与原图完全一致。</p>
+      </div>
+    </section>
+
+    <div class="ad-slot" data-ad="middle" aria-hidden="true"></div>
+
+    <section id="faq" class="card prose">
+      <h2>常见问题</h2>
+      <details class="faq-item"><summary>删除 EXIF 会影响画质吗？</summary><p>不会。EXIF 是附加在图像数据外的元数据段，删除它不触碰像素，画质与原图完全一致。</p></details>
+      <details class="faq-item"><summary>为什么要在发图前删 GPS？</summary><p>手机照片默认记录拍摄地点。外发的图片若带 GPS，等于把家庭住址、常去位置一并送出。删掉 GPS、保留拍摄参数是发图的最佳实践。</p></details>
+      <details class="faq-item"><summary>PNG 图片有 EXIF 吗？</summary><p>通常没有。EXIF 主要存在于 JPG（相机直出）中；截图与导出的 PNG 一般不含拍摄元数据。</p></details>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>本工具在您的浏览器本地处理图片，不上传任何数据。</p>
+      <p>© 2026 图片工具箱 · <a href="../legal/privacy.html">隐私政策</a> · <a href="../legal/terms.html">使用条款</a></p>
+    </div>
+  </footer>
+
+  <script type="module" src="../js/exifview.js"></script>
+</body>
+</html>
